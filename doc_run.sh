@@ -1,10 +1,9 @@
 echo $(docker ps -a -q) > existing.log
-sed -i '/^$/d' existing.log
-nri=$(cat existing.log | wc -l)
+nri=$(cat existing.log | wc -w)
 echo "Number of existing containers: "$nri
 if [ "$nri" = "0" ]
 then
-    docker run -it stlpro
+    docker run --name stlpro --mount type=bind,source="$(pwd)"/srcs,target=/srcs -it stlpro 
 elif [ "$nri" = "1" ]
 then
     echo -n "Restarting and attaching to: "
@@ -13,6 +12,6 @@ then
 else
     docker stop $(docker ps -a -q)
     docker rm $(docker ps -a -q)
-    docker run -it stlpro
+    docker run --name stlpro --mount type=bind,source="$(pwd)"/srcs,target=/srcs -it stlpro
 fi
 
